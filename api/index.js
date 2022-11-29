@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRoute = require("./routes/auth");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 dotenv.config();
 

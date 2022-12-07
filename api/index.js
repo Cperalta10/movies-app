@@ -1,9 +1,12 @@
 const express = require("express");
+const cookieSession = require("cookie-session");
 const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRoute = require("./routes/auth");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const googleAuth = require("./routes/googleAuth");
+const userRoute = require("./routes/users");
+const movieRoute = require("./routes/movies");
 
 dotenv.config();
 
@@ -27,7 +30,20 @@ async function main() {
 
 app.use(express.json());
 
-app.use("/api/auth/", authRoute);
+app.use(
+  cookieSession({
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [process.env.COOKIE_SECRET],
+  })
+);
+
+app.use("/google", googleAuth);
+
+app.use("/api/auth", authRoute);
+
+app.use("/api/users", userRoute);
+
+app.use("/api/movies", movieRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on: http://localhost:${PORT}`);
